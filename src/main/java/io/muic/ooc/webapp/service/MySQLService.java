@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class MySQLService {
 
     enum TestTableColumns {
-        username,password,name;
+        id,username,password,name;
     }
 
     private final String jdbcDriverStr;
@@ -24,10 +24,19 @@ public class MySQLService {
         this.jdbcURL = jdbcURL;
     }
 
+    public void updateData(String id,String username,String name)throws Exception{
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        preparedStatement = connection.prepareStatement("update test.test_table SET username = ?, name = ? where id = '"+id+"'");
+        preparedStatement.setString(1,username);
+        preparedStatement.setString(2,name);
+        preparedStatement.executeUpdate();
+    }
+
+
     public void writeData(String username, String password, String name) throws Exception{
 //        System.out.println(password.length());
         connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
-        preparedStatement = connection.prepareStatement("insert into test.test_table values (?,?,?)");
+        preparedStatement = connection.prepareStatement("insert into test.test_table values (default,?,?,?)");
         preparedStatement.setString(1,username);
         preparedStatement.setString(2,password);
         preparedStatement.setString(3,name);

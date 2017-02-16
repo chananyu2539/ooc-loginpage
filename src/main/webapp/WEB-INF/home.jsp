@@ -25,20 +25,35 @@
             <tr>
                 <th>Username</th>
                 <th>Name</th>
+                <th colspan="2">Action</th>
 
             </tr>
             <c:forEach var="user" items="${listUsers.rows}">
                 <tr>
                     <td><c:out value="${user.username}" /></td>
                     <td><c:out value="${user.name}" /></td>
+                    <td>
+                        <a href="edituser?id=${user.id}"><input type="submit" value="edit">
+                    </td>
+                    <td>
+                        <c:set var="currentUsr" value="${username}"/>
+                        <c:if test="${user.username != currentUsr}" >
+                            <a href="delete?id=${user.id}"><input type="submit" value="delete">
+                        </c:if>
+
+
+                    </td>
                 </tr>
             </c:forEach>
         </table>
     </div>
 
-
-<form action="/login" method="get">
+<form action="/adduser" method="get">
     <br><br>
+    <input type="submit" value="Add">
+</form>
+<form action="/login" method="get">
+    <br>
     <input type="submit" value="Logout">
 </form>
 </body>

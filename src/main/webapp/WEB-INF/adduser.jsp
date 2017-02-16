@@ -1,8 +1,8 @@
 <html>
     <body>
-        <h2>Register</h2>
+        <h2>Add User</h2>
         <p> ${error}  </p>
-        <form action="/register" method="post">
+        <form action="/adduser" method="post">
             Username:<br/>
             <input type="text" name="username"/>
             <br/>
@@ -17,7 +17,7 @@
             <br><br>
             <input type="submit" value="Submit">
         </form>
-        <form action="/login" method="get">
+        <form action="/" method="get">
         <br><br>
             <input type="submit" value="back">
         </form>

@@ -6,10 +6,8 @@
 package io.muic.ooc.webapp;
 
 import io.muic.ooc.webapp.service.MySQLService;
-import io.muic.ooc.webapp.servlet.HomeServlet;
+import io.muic.ooc.webapp.servlet.*;
 import io.muic.ooc.webapp.service.SecurityService;
-import io.muic.ooc.webapp.servlet.LoginServlet;
-import io.muic.ooc.webapp.servlet.RegisterServlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 
@@ -34,6 +32,16 @@ public class ServletRouter {
         initHome(ctx);
         initLogin(ctx);
         initRegister(ctx);
+        initAddUser(ctx);
+        initEditUser(ctx);
+    }
+
+    private void initEditUser(Context ctx) {
+        EditUserServlet editServlet = new EditUserServlet();
+        editServlet.setSecurityManager(securityService);
+        editServlet.setMySQLManager(mySQLService);
+        Tomcat.addServlet(ctx, "EditUserServlet", editServlet);
+        ctx.addServletMapping("/edituser", "EditUserServlet");
     }
 
     private void initRegister(Context ctx) {
@@ -42,6 +50,13 @@ public class ServletRouter {
         registerServlet.setMySQLManager(mySQLService);
         Tomcat.addServlet(ctx, "RegisterServlet", registerServlet);
         ctx.addServletMapping("/register", "RegisterServlet");
+    }
+    private void initAddUser(Context ctx) {
+        AddUserServlet addUserServlet = new AddUserServlet();
+        addUserServlet.setSecurityManager(securityService);
+        addUserServlet.setMySQLManager(mySQLService);
+        Tomcat.addServlet(ctx, "AddUserServlet", addUserServlet);
+        ctx.addServletMapping("/adduser", "AddUserServlet");
     }
 
 
