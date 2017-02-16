@@ -6,7 +6,8 @@
 
 <html>
 <body>
-<h2>I'm home</h2>
+<h2>User List</h2>
+<p> ${error}  </p>
 
 <sql:setDataSource
         var="myDS"
@@ -38,7 +39,7 @@
                     <td>
                         <c:set var="currentUsr" value="${username}"/>
                         <c:if test="${user.username != currentUsr}" >
-                            <a href="delete?id=${user.id}"><input type="submit" value="delete">
+                            <a href="deleteuser?id=${user.id}"><input type="submit" value="delete">
                         </c:if>
 
 

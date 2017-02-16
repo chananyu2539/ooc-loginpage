@@ -1,6 +1,5 @@
 package io.muic.ooc.webapp.servlet;
 
-import com.ja.security.PasswordHash;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import io.muic.ooc.webapp.service.MySQLService;
 import io.muic.ooc.webapp.service.SecurityService;
@@ -11,11 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by chananyu2539 on 2/16/2017 AD.
  */
-public class EditUserServlet extends HttpServlet {
+public class DeleteUserServlet extends HttpServlet {
     private SecurityService securityService;
     private MySQLService mySQLService;
     private String id;
@@ -35,7 +35,7 @@ public class EditUserServlet extends HttpServlet {
 
         if(authorized) {
             id = request.getParameter("id");
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/edituser.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/delete.jsp");
             rd.include(request, response);
         }
         else {
@@ -45,43 +45,26 @@ public class EditUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String name = request.getParameter("name");
+        try {
+            HashMap<String, String> idUsr = mySQLService.getIdUsr();
 
-
-        if (!username.equals("") && !name.equals(""))  {
-            // authenticate
-            if(username.length()>12){
-                String userError = "Username length is greater than 12.";
-                request.setAttribute("error", userError);
-                RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/edituser.jsp");
-                rd.include(request, response);
-            }
-            else{
+            if (id == null || request.getSession().getAttribute("username").equals(idUsr.get(id))) {
+                String selfError = "Cannot remove yourself.";
+                request.setAttribute("error", selfError);
+                RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
+                rd.include(request, response);            }
+            else {
                 try {
-                    //update data
-                    mySQLService.updateData(id,username,name);
+                    mySQLService.deleteData(id);
                     RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
                     rd.include(request, response);
-                }catch (MySQLIntegrityConstraintViolationException e){
-                    String duplicateError = "That username is already taken.";
-                    request.setAttribute("error", duplicateError);
-                    RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/edituser.jsp");
-                    rd.include(request, response);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Shouldn't reach here");
                     e.printStackTrace();
                 }
             }
-
-        } else {
-            String nullError = "Please fill in all the block.";
-            request.setAttribute("error", nullError);
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/edituser.jsp");
-            rd.include(request, response);
+        } catch (Exception e) {
+            System.out.println("Get Fail");
         }
-
-
     }
 }

@@ -24,6 +24,13 @@ public class MySQLService {
         this.jdbcURL = jdbcURL;
     }
 
+    public void deleteData(String id) throws Exception{
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        preparedStatement = connection.prepareStatement("DELETE FROM test.test_table where id = '"+id+"'");
+
+        preparedStatement.executeUpdate();
+    }
+
     public void updateData(String id,String username,String name)throws Exception{
         connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
         preparedStatement = connection.prepareStatement("update test.test_table SET username = ?, name = ? where id = '"+id+"'");
@@ -42,6 +49,28 @@ public class MySQLService {
         preparedStatement.setString(3,name);
         preparedStatement.executeUpdate();
 
+    }
+
+    public HashMap<String,String> getIdUsr()throws Exception{
+        HashMap<String,String> result = new HashMap<>();
+        try {
+            Class.forName(jdbcDriverStr);
+//            connection = DriverManager.getConnection(jdbcURL);
+            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from test.test_table;");
+            while (resultSet.next()) {
+                String id = resultSet.getString(TestTableColumns.id.toString());
+                String usr = resultSet.getString(TestTableColumns.username.toString());
+                result.put(id,usr);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            close();
+            return result;
+        }
     }
 
     public HashMap<String,String> getUsrPass() throws Exception {

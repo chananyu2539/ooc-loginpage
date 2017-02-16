@@ -55,6 +55,7 @@ public class LoginServlet extends HttpServlet {
             try {
                 if (mySQLService.isValidInput(inp)) {
                     request.getSession().setAttribute("username", username);
+
                     response.sendRedirect("/");
 //                RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
 //                rd.include(request, response);
