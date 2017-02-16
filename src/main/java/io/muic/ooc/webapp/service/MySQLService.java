@@ -1,12 +1,14 @@
 package io.muic.ooc.webapp.service;
 
+import com.ja.security.PasswordHash;
+
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MySQLService {
 
     enum TestTableColumns {
-        id, username,password;
+        username,password,name;
     }
 
     private final String jdbcDriverStr;
@@ -22,41 +24,42 @@ public class MySQLService {
         this.jdbcURL = jdbcURL;
     }
 
-    public void writeData(String username, String password) throws Exception{
-        preparedStatement = connection.prepareStatement("insert into test.test_table values (default ,?,?)");
+    public void writeData(String username, String password, String name) throws Exception{
+//        System.out.println(password.length());
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        preparedStatement = connection.prepareStatement("insert into test.test_table values (?,?,?)");
         preparedStatement.setString(1,username);
-        preparedStatement.setString(2, password);
+        preparedStatement.setString(2,password);
+        preparedStatement.setString(3,name);
         preparedStatement.executeUpdate();
 
     }
 
-    public ArrayList<String[]> readData() throws Exception {
-        ArrayList<String[]> rs = new ArrayList<>();
+    public HashMap<String,String> getUsrPass() throws Exception {
+        HashMap<String,String> result = new HashMap<>();
         try {
             Class.forName(jdbcDriverStr);
 //            connection = DriverManager.getConnection(jdbcURL);
             connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from test.test_table;");
-            rs = getResultSet(resultSet);
-
+            result = getResultSet(resultSet);
+            System.out.println(result.keySet());
         }catch (Exception e){
             e.printStackTrace();
         }
         finally {
             close();
-            return rs;
+            return result;
         }
     }
 
-    private ArrayList<String[]> getResultSet(ResultSet resultSet) throws Exception {
-        ArrayList<String[]> result = new ArrayList<>();
+    private HashMap<String,String> getResultSet(ResultSet resultSet) throws Exception {
+        HashMap<String,String> result = new HashMap<>();
         while (resultSet.next()) {
-            Integer id = resultSet.getInt(TestTableColumns.id.toString());
             String usr = resultSet.getString(TestTableColumns.username.toString());
             String pass = resultSet.getString(TestTableColumns.password.toString());
-            String[] temp = {usr,pass};
-            result.add(temp);
+            result.put(usr,pass);
         }
         return result;
     }
@@ -77,12 +80,9 @@ public class MySQLService {
     }
 
     public boolean isValidInput(String[] input)throws Exception{
-        ArrayList<String[]> currentDB = readData();
-        for(int i = 0; i< currentDB.size(); i++){
-            String[] currentRecord = currentDB.get(i);
-            if(currentRecord[0].equals(input[0]) && currentRecord[1].equals(input[1])){
-                return true;
-            }
+        HashMap<String,String> currentDB = getUsrPass();
+        if(currentDB.keySet().contains(input[0])){
+            return new PasswordHash().validatePassword(input[1],currentDB.get(input[0]));
         }
         return false;
 

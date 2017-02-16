@@ -6,10 +6,9 @@
 package io.muic.ooc.webapp.servlet;
 
 import io.muic.ooc.webapp.service.MySQLService;
-import io.muic.ooc.webapp.service.SecurityService;
+//import io.muic.ooc.webapp.service.SecurityService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,16 +21,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginServlet extends HttpServlet {
 
-    private SecurityService securityService;
+//    private SecurityService securityService;
     private MySQLService mySQLService;
 
     public void setMySQLManager(MySQLService mySQLManager) {
         this.mySQLService = mySQLManager;
     }
 
-    public void setSecurityManager(SecurityService securityService) {
-        this.securityService = securityService;
-    }
+//    public void setSecurityManager(SecurityService securityService) {
+//        this.securityService = securityService;
+//    }
 
 
     @Override
@@ -47,11 +46,7 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        try{
-            ArrayList<String[]> read = mySQLService.readData();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
 
         if(!username.equals("") && !password.equals("")){
             // authenticate

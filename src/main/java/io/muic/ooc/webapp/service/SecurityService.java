@@ -19,7 +19,7 @@ public class SecurityService {
 
         return username != null;
         // do checking
-        // if username != null and contain in DB and user in session match username;
+        // if username != null
         // request.getSession().getAttribute("username").equal(username)
 
 
