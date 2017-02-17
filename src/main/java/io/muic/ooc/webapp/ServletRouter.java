@@ -35,6 +35,15 @@ public class ServletRouter {
         initAddUser(ctx);
         initEditUser(ctx);
         initDeleteUser(ctx);
+        initUser(ctx);
+    }
+
+    private void initUser(Context ctx) {
+        UserServlet userServlet = new UserServlet();
+        userServlet.setMySQLManager(mySQLService);
+        userServlet.setSecurityManager(securityService);
+        Tomcat.addServlet(ctx,"UserServlet",userServlet);
+        ctx.addServletMapping("/user","UserServlet");
     }
 
     private void initDeleteUser(Context ctx) {

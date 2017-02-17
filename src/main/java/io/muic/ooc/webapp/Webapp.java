@@ -19,7 +19,7 @@ public class Webapp {
 
         String docBase = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(8082);
+        tomcat.setPort(8080);
         SecurityService securityService = new SecurityService();
 
         MySQLService mySQLService = new MySQLService(MYSQL_DRIVER,MYSQL_URL);

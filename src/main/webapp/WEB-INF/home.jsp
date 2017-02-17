@@ -13,12 +13,17 @@
         var="myDS"
         driver="com.mysql.jdbc.Driver"
         url="jdbc:mysql://localhost:3306/test"
-        user="root" password=""
+        user="root" password="12345"
     />
 
     <sql:query var="listUsers"   dataSource="${myDS}">
         SELECT * FROM test_table;
     </sql:query>
+
+    <form action="/user" method="get">
+        <br><br>
+        <input type="submit" value="Profile">
+    </form>
 
     <div align="center">
         <table border="1" cellpadding="5">
@@ -41,7 +46,6 @@
                         <c:if test="${user.username != currentUsr}" >
                             <a href="deleteuser?id=${user.id}"><input type="submit" value="delete">
                         </c:if>
-
 
                     </td>
                 </tr>

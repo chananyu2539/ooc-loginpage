@@ -25,14 +25,14 @@ public class MySQLService {
     }
 
     public void deleteData(String id) throws Exception{
-        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
         preparedStatement = connection.prepareStatement("DELETE FROM test.test_table where id = '"+id+"'");
 
         preparedStatement.executeUpdate();
     }
 
     public void updateData(String id,String username,String name)throws Exception{
-        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
         preparedStatement = connection.prepareStatement("update test.test_table SET username = ?, name = ? where id = '"+id+"'");
         preparedStatement.setString(1,username);
         preparedStatement.setString(2,name);
@@ -42,7 +42,7 @@ public class MySQLService {
 
     public void writeData(String username, String password, String name) throws Exception{
 //        System.out.println(password.length());
-        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+        connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
         preparedStatement = connection.prepareStatement("insert into test.test_table values (default,?,?,?)");
         preparedStatement.setString(1,username);
         preparedStatement.setString(2,password);
@@ -51,12 +51,36 @@ public class MySQLService {
 
     }
 
+    public String getFirstName(String username){
+        String result = "";
+        try {
+            Class.forName(jdbcDriverStr);
+//            connection = DriverManager.getConnection(jdbcURL);
+            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from test.test_table;");
+            while (resultSet.next()) {
+                String usr = resultSet.getString(TestTableColumns.username.toString());
+                if(usr.equals(username)){
+                    result = resultSet.getString(TestTableColumns.name.toString());
+                    break;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            close();
+            return result;
+        }
+    }
+
     public HashMap<String,String> getIdUsr()throws Exception{
         HashMap<String,String> result = new HashMap<>();
         try {
             Class.forName(jdbcDriverStr);
 //            connection = DriverManager.getConnection(jdbcURL);
-            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from test.test_table;");
             while (resultSet.next()) {
@@ -78,11 +102,10 @@ public class MySQLService {
         try {
             Class.forName(jdbcDriverStr);
 //            connection = DriverManager.getConnection(jdbcURL);
-            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "");
+            connection = DriverManager.getConnection(jdbcURL + "?useSSL=false", "root", "12345");
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from test.test_table;");
             result = getResultSet(resultSet);
-            System.out.println(result.keySet());
         }catch (Exception e){
             e.printStackTrace();
         }
