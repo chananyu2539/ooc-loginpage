@@ -49,15 +49,14 @@ public class DeleteUserServlet extends HttpServlet {
             HashMap<String, String> idUsr = mySQLService.getIdUsr();
 
             if (id == null || request.getSession().getAttribute("username").equals(idUsr.get(id))) {
-                String selfError = "Cannot remove yourself.";
-                request.setAttribute("error", selfError);
+                response.sendRedirect("/");
                 RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
-                rd.include(request, response);            }
+                rd.include(request, response);
+            }
             else {
                 try {
                     mySQLService.deleteData(id);
-                    RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
-                    rd.include(request, response);
+                    response.sendRedirect("/");
                 } catch (Exception e) {
                     System.out.println("Shouldn't reach here");
                     e.printStackTrace();

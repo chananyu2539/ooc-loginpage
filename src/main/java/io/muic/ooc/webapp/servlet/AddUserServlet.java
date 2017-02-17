@@ -60,17 +60,19 @@ public class AddUserServlet extends HttpServlet {
                 try {
                     String hashPass = new PasswordHash().createHash(password);
                     mySQLService.writeData(username, hashPass, name);
-                    RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/home.jsp");
-                    rd.include(request, response);
+                    response.sendRedirect("/");
+                    System.out.println(1);
                 }catch (MySQLIntegrityConstraintViolationException e){
                     String duplicateError = "That username is already taken.";
                     request.setAttribute("error", duplicateError);
                     RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/adduser.jsp");
                     rd.include(request, response);
+                    System.out.println(2);
                 }
                 catch (Exception e){
                     System.out.println("Shouldn't reach here");
                     e.printStackTrace();
+                    System.out.println(3);
                 }
             }
             else {

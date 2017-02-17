@@ -55,8 +55,8 @@ public class RegisterServlet extends HttpServlet {
                 try {
                     String hashPass = new PasswordHash().createHash(password);
                     mySQLService.writeData(username, hashPass, name);
-                    RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/login.jsp");
-                    rd.include(request, response);
+                    request.getSession().setAttribute("username", username);
+                    response.sendRedirect("/");
                 }catch (MySQLIntegrityConstraintViolationException e){
                     String duplicateError = "That username is already taken.";
                     request.setAttribute("error", duplicateError);
